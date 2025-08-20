@@ -18,14 +18,14 @@ $$
 y = \text{ReLU}(W_\text{dec}W_\text{enc} + b_\text{dec})
 $$
 
-The important part is that $\text{ReLU}$ comes after multiplying by a tall matrix (up-projection), and is able to hydrate more dimensions of information that the bottleneck dimension, especially if the data is sparse. How does this happen? Each $(W_i, b_i)$ pair determines how the rank-$h$ subspace is tilted in $\mathbb{R}^d$ space relative to dimension $i$ and shifted w.r.t to the origin, and $\text{ReLU}$ effectively segments the rank-$h$ subspace into 2 disjoint half-spaces at coordinate plane hyperplane defined by $x_i = 0$. One half-space corresponds to the negative (nullified) region of $\text{ReLU}$, while the other half-space corresponds to the positive (retained) region of $\text{ReLU}$. This illustration shows one such half-space pair corresponding to dimension $z$ (note that we only visualize a polygon in that rank-$h=2$ subspace for reasons that will be explained below):
+The important part is that $\text{ReLU}$ comes after multiplying by a tall matrix (up-projection), and is able to hydrate more dimensions of information that the bottleneck dimension, especially if the data is sparse. How does this happen? Each $(W_i, b_i)$ pair determines how the rank $h$ subspace is tilted in $\mathbb{R}^d$ space relative to dimension $i$ and shifted w.r.t to the origin, and $\text{ReLU}$ effectively segments the rank $h$ subspace into 2 disjoint half-spaces at coordinate plane hyperplane defined by $x_i = 0$. One half-space corresponds to the negative (nullified) region of $\text{ReLU}$, while the other half-space corresponds to the positive (retained) region of $\text{ReLU}$. This illustration shows one such half-space pair corresponding to dimension $z$ (note that we only visualize a polygon in that rank $(h=2)$ subspace for reasons that will be explained below):
 
 <div style="display: flex; justify-content: center;">
     <img src="images/intersection_visualization.png" width="300">
 </div>
 
 
-So, if $W \in \mathbb{R}^{6 \times h}$ and $b \in \mathbb{R}^6$, the way to visualize what the MLP does to the rank-$h$ subspace spanned by $W$, is to think of that subspace as a superposition of 6 pairs of disjoint half-spaces.
+So, if $W \in \mathbb{R}^{6 \times h}$ and $b \in \mathbb{R}^6$, the way to visualize what the MLP does to the rank $h$ subspace spanned by $W$, is to think of that subspace as a superposition of 6 pairs of disjoint half-spaces.
 
 <div style="display: flex; justify-content: center;">
     <img src="images/superposition_of_halfspaces.png" width="300">
@@ -61,7 +61,7 @@ The goal of their toy auto-encoder was to be able to reconstruct input features 
 - $W_\text{enc} e_i$ or $W_\text{enc, i}$ refers to the "feature $i$ direction" in the bottleneck latent space
 - $W_\text{dec} W_\text{enc} e_i$ or $W_\text{dec} W_\text{enc, i}$ refers to the "feature $i$ direction" in the reconstructed latent space, because it's simply an up-projection of $W_\text{enc, i}$ to the larger-dimensional reconstructed latent space.
 
-So, the region of interest to visualize are demarcated by the feature directions in the reconstructed latent space, i.e. $\{W_\text{dec} W_\text{enc} e_i + b \mid \forall i \in [1, d] \} \in \mathbb{R}^d$. These are precisely the `plane_points`.
+So, the region of interest to visualize are demarcated by the feature directions in the reconstructed latent space, i.e. $\\{W_\text{dec} W_\text{enc} e_i + b \mid \forall i \in [1, d] \\} \in \mathbb{R}^d$. These are precisely the `plane_points`.
 
 ## Example Use and Details
 
