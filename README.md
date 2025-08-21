@@ -15,25 +15,25 @@ $$
 And in Autoencoders, we have:
 
 $$
-y = \text{ReLU}(W_\text{dec}W_\text{enc} + b_\text{dec})
+y = \text{ReLU}(W_\text{dec}W_\text{enc} x + b_\text{dec})
 $$
 
 The important part is that $\text{ReLU}$ comes after multiplying by a tall matrix (up-projection), and is able to hydrate more dimensions of information that the bottleneck dimension, especially if the data is sparse. How does this happen? Each $(W_i, b_i)$ pair determines how the rank $h$ subspace is tilted in $\mathbb{R}^d$ space relative to dimension $i$ and shifted w.r.t to the origin, and $\text{ReLU}$ effectively segments the rank $h$ subspace into 2 disjoint half-spaces at coordinate plane hyperplane defined by $x_i = 0$. One half-space corresponds to the negative (nullified) region of $\text{ReLU}$, while the other half-space corresponds to the positive (retained) region of $\text{ReLU}$. This illustration shows one such half-space pair corresponding to dimension $z$ (note that we only visualize a polygon in that rank $(h=2)$ subspace for reasons that will be explained below):
 
-<div style="display: flex; justify-content: center;">
+<div style="text-align: center;">
     <img src="images/intersection_visualization.png" width="300">
 </div>
 
 
 So, if $W \in \mathbb{R}^{6 \times h}$ and $b \in \mathbb{R}^6$, the way to visualize what the MLP does to the rank $h$ subspace spanned by $W$, is to think of that subspace as a superposition of 6 pairs of disjoint half-spaces.
 
-<div style="display: flex; justify-content: center;">
+<div style="text-align: center;">
     <img src="images/superposition_of_halfspaces.png" width="300">
 </div>
 
 **This library is about visualizing latent spaces as the superposition of half-space pairs.** To introduce readers to this library, we will talk about the case where $W \in \mathbb{R}^{d \times 2}$, because visualizing a 2-dimensional bottleneck hidden space is easy. 
 
-## Visualization Setup
+## `SegmentablePlane`: Visualization Setup
 
 In the case of $W \in \mathbb{R}^{d \times 2}$, we know that our latent space is a $2$-dimensional subspace that lives in a $d$-dimensional universe, spanned by the columns of $W$. We are interested in visualizing a segment of this $2$-dimensional subspace and see how the superposition of half-space pairs looks like. So, we have to define the segment of space we want to visualize.
 
@@ -63,5 +63,18 @@ The goal of their toy auto-encoder was to be able to reconstruct input features 
 
 So, the region of interest to visualize are demarcated by the feature directions in the reconstructed latent space, i.e. $\\{W_\text{dec} W_\text{enc} e_i + b \mid \forall i \in [1, d] \\} \in \mathbb{R}^d$. These are precisely the `plane_points`.
 
-## Example Use and Details
+## `SegmentablePlane`: Example Use and Details
+
+## `SegmentableCube`: Visualization Setup
+
+The `SegmentablePlane` allows you to define the vertices of a rank $2$ subspace within an $n$ dimensional vector space. However, what if your bottleneck dimension is not 2, but 3 or greater? Then ideally, you would want to be able to visualize the superposition of half-space pairs in at least 3 of those $h$ bottleneck dimensions. `SegmentableCube` allows you to do that.
+
+The only difference between `SegmentablePlane` and `SegmentableCube` is that for `SegmentablePlane`, you are given the freedom to choose the vertices of the region that you would like to visualize. For `SegmentableCube`, you are only allowed to plot a cubic volume of space, but you get to choose:
+- The 3 basis vectors for that cube
+- The cube's size
+- The cube's middle (usually the bias, $b$)
+
+> This is really only due to the complication that it is cumbersome to define an arbitrary polygonal 3D shape (we need to define edges / surfaces instead of vertices), and that with a non-convex 3D shape, calculating 3D segments that are formed from a line of intersection with the 3D shape is very complex.
+
+## `SegmentableCube`: Example Use and Details
 
