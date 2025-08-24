@@ -1,5 +1,7 @@
 # Latent Space Visualizer for 1-layer ReLU MLP
 
+> Although this repo only has `SegmentablePlane`, there's also a `SegmentableCube` for bottleneck dimensions of 3 and above. It's WIP; please reach out to ryan.rtjj@gmail.com for access.
+
 ReLU MLPs typically have this component:
 
 $$
@@ -65,16 +67,61 @@ So, the region of interest to visualize are demarcated by the feature directions
 
 ## `SegmentablePlane`: Example Use and Details
 
-## `SegmentableCube`: Visualization Setup
+### Training Auto-Encoders
 
-The `SegmentablePlane` allows you to define the vertices of a rank $2$ subspace within an $n$ dimensional vector space. However, what if your bottleneck dimension is not 2, but 3 or greater? Then ideally, you would want to be able to visualize the superposition of half-space pairs in at least 3 of those $h$ bottleneck dimensions. `SegmentableCube` allows you to do that.
+Suppose you were training an autoencoder in the form:
+$$
+y = \text{ReLU} (W_\text{dec} W_\text{enc} x + b_\text{dec})
+$$
 
-The only difference between `SegmentablePlane` and `SegmentableCube` is that for `SegmentablePlane`, you are given the freedom to choose the vertices of the region that you would like to visualize. For `SegmentableCube`, you are only allowed to plot a cubic volume of space, but you get to choose:
-- The 3 basis vectors for that cube
-- The cube's size
-- The cube's middle (usually the bias, $b$)
+Let's get some rigged weights just for demonstration (this is in `example.py`)
+```python
+num_feats = 6
 
-> This is really only due to the complication that it is cumbersome to define an arbitrary polygonal 3D shape (we need to define edges / surfaces instead of vertices), and that with a non-convex 3D shape, calculating 3D segments that are formed from a line of intersection with the 3D shape is very complex.
+# Shape (2, 6) and (6, 2) respectively
+W_enc = get_unit_2d_vectors_regularly_spaced(num_vecs=num_feats)
+W_dec = W_enc.T
 
-## `SegmentableCube`: Example Use and Details
+# Shape (6,)
+b = get_rigged_bias(num_dims=num_feats)
 
+# Assume each column of W_enc corresponds cleanly to a feature.
+# To get feature 1, we do W_dec @ W_enc @ e1.
+# To get all features, we do W_dec @ W_enc @ identity
+plane_vertices = np.eye(num_feats) @ W_enc.T @ W_dec.T + b
+```
+
+Let's plot this out
+```python
+from segmentable_spaces import segment_and_plot
+from segmentable_spaces import SegmentablePlane
+
+# Create a figure and axis
+segment_and_plot(
+    plane_vertices,
+    W_enc,
+    W_dec,
+    bias=b,
+    Z=3,
+    plot_title='Example plot'
+)
+```
+
+
+<div style="text-align: center;">
+    <img src="images/example.png" width="300">
+</div>
+
+## Modifying and Testing
+
+There are unit tests for `SegmentablePlane` in this library, as well as visual tests, for when unit tests are not clear enough. In case you'd like to make modifications, the expected results of the visual tests are as shown below:
+
+<img src="images/test_easy.png" width="300">
+<img src="images/test_medium.png" width="300">
+<img src="images/test_hard_1.png" width="300">
+<img src="images/test_hard_2.png" width="300">
+<img src="images/test_hard_3a.png" width="300">
+<img src="images/test_hard_3b.png" width="300">
+<img src="images/test_hard_4a.png" width="300">
+<img src="images/test_hard_4b.png" width="300">
+<img src="images/test_hard_5.png" width="300">
