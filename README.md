@@ -70,6 +70,7 @@ So, the region of interest to visualize are demarcated by the feature directions
 ### Training Auto-Encoders
 
 Suppose you were training an autoencoder in the form:
+
 $$
 y = \text{ReLU} (W_\text{dec} W_\text{enc} x + b_\text{dec})
 $$
