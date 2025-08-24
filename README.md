@@ -20,7 +20,11 @@ $$
 y = \text{ReLU}(W_\text{dec}W_\text{enc} x + b_\text{dec})
 $$
 
-The important part is that $\text{ReLU}$ comes after multiplying by a tall matrix (up-projection), and is able to hydrate more dimensions of information that the bottleneck dimension, especially if the data is sparse. How does this happen? Each $(W_i, b_i)$ pair determines how the rank $h$ subspace is tilted in $\mathbb{R}^d$ space relative to dimension $i$ and shifted w.r.t to the origin, and $\text{ReLU}$ effectively segments the rank $h$ subspace into 2 disjoint half-spaces at coordinate plane hyperplane defined by $x_i = 0$. One half-space corresponds to the negative (nullified) region of $\text{ReLU}$, while the other half-space corresponds to the positive (retained) region of $\text{ReLU}$. This illustration shows one such half-space pair corresponding to dimension $z$ (note that we only visualize a polygon in that rank $(h=2)$ subspace for reasons that will be explained below):
+The important part is that $\text{ReLU}$ comes after multiplying by a tall matrix (up-projection), and is able to hydrate more dimensions of information that the bottleneck dimension, especially if the data is sparse. How does this happen? Each $(W_i, b_i)$ pair determines how the rank $h$ subspace is
+- tilted in $\mathbb{R}^d$ space relative to dimension $i$
+- shifted w.r.t to the origin
+
+Then, for each dimension $i$, $\text{ReLU}$ effectively segments the rank $h$ subspace into 2 disjoint half-spaces at the coordinate plane hyperplane defined by $x_i = 0$. One half-space corresponds to the negative (nullified) region of $\text{ReLU}$, while the other half-space corresponds to the positive (activated) region of $\text{ReLU}$. For example, for a bottleneck dimension of $2$ (such that the latent space is rank-2, hence `class SegmentablePlane`), this illustration shows one such half-space pair corresponding to dimension $z$.
 
 <div style="text-align: center;">
     <img src="images/intersection_visualization.png" width="300">
