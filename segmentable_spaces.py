@@ -140,11 +140,11 @@ class SegmentableSpace():
         """
         vertex_idxs = edge_idx_to_vertex_idxs[edge_idx]
         assert len(vertex_idxs) == 2, \
-            f'Ad edge should only have 2 vertices if not yet inserted ' \
+            'Ad edge should only have 2 vertices if not yet inserted ' \
             'an intersection for'
         
         u = annotated_points[vertex_idxs[0]][0]
-        v = annotated_points[vertex_idxs[0]][1]
+        v = annotated_points[vertex_idxs[1]][0]
 
         if np.allclose(u[dim_idx], 0):
             annotated_points[vertex_idxs[0]] = (u, PointType.INTERSECTION)
